@@ -24,6 +24,7 @@ import org.apache.paimon.data.InternalArray;
 import org.apache.paimon.data.InternalMap;
 import org.apache.paimon.data.InternalRow;
 import org.apache.paimon.data.Timestamp;
+import org.apache.paimon.data.variant.Variant;
 import org.apache.paimon.types.RowKind;
 
 import io.airlift.slice.Slice;
@@ -176,6 +177,11 @@ public class TrinoRow implements InternalRow, Serializable {
     @Override
     public InternalRow getRow(int i, int i1) {
         // todo
+        return null;
+    }
+
+    @Override
+    public Variant getVariant(int i) {
         return null;
     }
 }

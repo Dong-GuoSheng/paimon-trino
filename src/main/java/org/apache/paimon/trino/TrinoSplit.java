@@ -72,7 +72,6 @@ public class TrinoSplit implements ConnectorSplit {
         return Collections.emptyList();
     }
 
-    @Override
     public Object getInfo() {
         return Collections.emptyMap();
     }

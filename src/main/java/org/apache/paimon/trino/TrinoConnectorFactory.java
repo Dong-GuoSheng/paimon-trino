@@ -193,7 +193,10 @@ public class TrinoConnectorFactory implements ConnectorFactory {
                 // for trino 440
                 return (FileSystemModule)
                         constructor.newInstance(
-                                catalogName, context.getNodeManager(), context.getOpenTelemetry());
+                                catalogName,
+                                context.getNodeManager(),
+                                context.getOpenTelemetry(),
+                                true);
             }
         } catch (InstantiationException | InvocationTargetException | IllegalAccessException e) {
             throw new RuntimeException(e);

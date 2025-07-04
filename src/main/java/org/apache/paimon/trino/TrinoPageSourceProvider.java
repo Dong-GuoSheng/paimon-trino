@@ -48,7 +48,7 @@ import io.trino.orc.OrcReader;
 import io.trino.orc.OrcReaderOptions;
 import io.trino.orc.OrcRecordReader;
 import io.trino.orc.TupleDomainOrcPredicate;
-import io.trino.plugin.hive.FileFormatDataSourceStats;
+import io.trino.plugin.base.metrics.FileFormatDataSourceStats;
 import io.trino.plugin.hive.orc.OrcPageSource;
 import io.trino.spi.connector.ColumnHandle;
 import io.trino.spi.connector.ConnectorPageSource;
@@ -381,15 +381,11 @@ public class TrinoPageSourceProvider implements ConnectorPageSourceProvider {
             fileColumns.forEach(column -> fieldsMap.put(column.getColumnName(), column));
             TupleDomainOrcPredicate.TupleDomainOrcPredicateBuilder predicateBuilder =
                     TupleDomainOrcPredicate.builder();
-            List<OrcPageSource.ColumnAdaptation> columnAdaptations = new ArrayList<>();
             List<OrcColumn> fileReadColumns = new ArrayList<>(columns.size());
             List<Type> fileReadTypes = new ArrayList<>(columns.size());
 
             for (int i = 0; i < columns.size(); i++) {
                 if (columns.get(i) != null) {
-                    // column exists
-                    columnAdaptations.add(
-                            OrcPageSource.ColumnAdaptation.sourceColumn(fileReadColumns.size()));
                     OrcColumn orcColumn = fieldsMap.get(columns.get(i));
                     if (orcColumn == null) {
                         throw new RuntimeException(
@@ -400,8 +396,6 @@ public class TrinoPageSourceProvider implements ConnectorPageSourceProvider {
                     if (domains.get(i) != null) {
                         predicateBuilder.addColumn(orcColumn.getColumnId(), domains.get(i));
                     }
-                } else {
-                    columnAdaptations.add(OrcPageSource.ColumnAdaptation.nullColumn(types.get(i)));
                 }
             }
 
@@ -410,6 +404,7 @@ public class TrinoPageSourceProvider implements ConnectorPageSourceProvider {
                     reader.createRecordReader(
                             fileReadColumns,
                             fileReadTypes,
+                            false,
                             predicateBuilder.build(),
                             DateTimeZone.UTC,
                             memoryUsage,
@@ -418,7 +413,6 @@ public class TrinoPageSourceProvider implements ConnectorPageSourceProvider {
 
             return new OrcPageSource(
                     recordReader,
-                    columnAdaptations,
                     orcDataSource,
                     Optional.empty(),
                     Optional.empty(),

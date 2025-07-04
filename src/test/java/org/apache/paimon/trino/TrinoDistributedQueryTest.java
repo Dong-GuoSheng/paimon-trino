@@ -541,7 +541,6 @@ public class TrinoDistributedQueryTest extends AbstractDistributedEngineOnlyQuer
         throw new RuntimeException("TODO: test not implemented yet");
     }
 
-    @Override
     public void testLargePivot() {
         throw new RuntimeException("TODO: test not implemented yet");
     }
